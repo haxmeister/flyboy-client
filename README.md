@@ -1,6 +1,6 @@
 # flyboy-client
 
-A LUA plugin for Vendetta Online that provides functionality such as locations of enemy players, an asteroid/ore database and other things to come.
+A LUA plugin for Vendetta Online that provides functionality such as locations of enemy players, an asteroid/ore database and other things to come. Some of the base code for this plugin was written by RedSpy and much has been added and modified to bend it to it's new purpose.
 
 ## Installation:
 
