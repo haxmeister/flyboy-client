@@ -146,18 +146,7 @@ flyboy.List.ListWindow = flyboy.List.ListWindow or iup.dialog{
 }
 flyboy.List.ListWindow:map()
 
-flyboy.Notifier.TargetChanged = function()
-    flyboy.UI.Status.title = ""
-    flyboy.UI.StatusWindow.visible = "NO"
-    pcall(function()
-        local name, h, d, f, g, s = GetTargetInfo()
-        if (name~=nil and f~=nil) then
-            if (string.sub(name, 1, 1)~="*") then
-                flyboy.TCPConn.SendData({ action='playerstatus', name=name })
-            end
-        end
-    end)
-end
+
 
 
 
