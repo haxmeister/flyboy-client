@@ -63,3 +63,4 @@ function flyboy.roid:getobject()
     self:update()
     return { sectorid=self.sector, reporter=self.reporter, reporterfaction=self.reporterfaction, reporterhealth=self.reporterhealth, reporterguild=self.reporterguild}
 end
+

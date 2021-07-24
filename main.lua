@@ -36,11 +36,11 @@ flyboy.server = "damona.liguros.net"
 flyboy.port = 6736
 
 flyboy.print = function(str)
-    pcall(function() HUD:PrintSecondaryMsg("\1278e5151[\127aa0000flyboy\1278e5151] \127dddddd" .. str) end)
+    pcall(function() HUD:PrintSecondaryMsg("\1278e5151[\1270000aaflyboy\1278e5151] \127dddddd" .. str) end)
 end
 
 flyboy.printerror = function(str)
-    pcall(function() HUD:PrintSecondaryMsg("\1278e5151[\127aa0000flyboy\1278e5151] \127ff3333" .. str) end)
+    pcall(function() HUD:PrintSecondaryMsg("\1278e5151[\1270000aaflyboy\1278e5151] \127ff3333" .. str) end)
 end
 
 flyboy.PlayerEnteredGame = function()

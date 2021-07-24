@@ -118,7 +118,6 @@ flyboy.TCPConn.OnData = function(sock, input)
         end
         return
     end
-    print(data.action)
     if (flyboy.Events[action]) then
         flyboy.Events[action](data)
 
@@ -177,9 +176,12 @@ end
 -- Response to findore
 flyboy.Events["findore"] = function(params)
     table.sort(params)
+    --params[action] = nil
+    --params[result] = nil
     for k,v in pairs(params) do
         if (tonumber(k))then
             local sector = AbbrLocationStr( tonumber(k) )
+
             print (sector..": "..params[k]["max"].."% in "..params[k]["roids"].." roids")
         end
     end
@@ -457,6 +459,36 @@ local myguild = "[" .. GetGuildTag() .. "] "
 
 end
 
+flyboy.Events["findore"] = function(params)
+    flyboy.List.List.DELLIN = "1--1"
+    --print (params.list)
+    local sectorName
+    local num
+    local orderedlist ={}
+    for item, info in pairs(params.list) do
+        num = tonumber(item)
+        --orderedlist[num] = info
+        table.insert(orderedlist,num)
+
+        --print(orderedlist[num])
+    end
+        --print(spickle(orderedlist))
+    table.sort(orderedlist)
+    local valstring
+    for item,value in pairs(orderedlist) do
+        --print(value)
+        valstring = tostring(value)
+        --print(params.list[valstring].roids)
+        --print("are we looping?")
+        flyboy.List.List.ADDLIN=1
+        flyboy.List.List[ item .. ':1'] = AbbrLocationStr(value) --params.list[valstring].." "--record.sector
+        flyboy.List.List[ item .. ':2'] = params.list[valstring].roids.." "
+        flyboy.List.List[ item .. ':3'] = params.list[valstring].max.."% "
+        --flyboy.List.List:setattribute("BGCOLOR", item, -1, flyboy.List.bg[2])
+        --flyboy.List.List:setattribute("FGCOLOR", item, 2, colors[2])
+    end
+    ShowDialog(flyboy.List.ListWindow);
+end
 
 flyboy.TCPConn.Disconnect = function()
     if (flyboy.TCPConn.isLoggedIn) then
