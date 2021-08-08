@@ -150,4 +150,4 @@ flyboy.List.ListWindow:map()
 
 
 
-RegisterEvent(flyboy.Notifier.TargetChanged, "TARGET_CHANGED")
+--RegisterEvent(flyboy.Notifier.TargetChanged, "TARGET_CHANGED")
