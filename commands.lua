@@ -1,62 +1,61 @@
---[[
 
-Author: Joshua S. Day (haxmeister)
-
-Purpose: This file provides /flyboy commands that
-         can be executed from the chat window during game play
-
---]]
-
---[[
-
-Flyboy.Commands is the table that will hold our commands
-any command here can be executed in game using /flyboy [function name]
-to add a command simply add a function with the corresponding name
-to this table
-
---]]
-Flyboy.Commands = {
+AllianceChat.Commands = AllianceChat.Commands or {
+    ['prompt'] = function ()
+         ShowDialog(AllianceChat.UI.chatPrompt)
+    end,
 
     help = function()
-        print ("help function called")
+        print ("help function called in AllianceChat.Commands.lua")
     end,
 
-    connect = function()
-        Flyboy.Conn:Connect(Flyboy.server, Flyboy.port)
-    end,
-
-    disconnect = function()
-        Flyboy.Conn:Disconnect()
-    end,
 }
 
---[[
 
-This dispatch function is the only registered command in flyboy
-and has the purpose of finding the appropriate function to
-execute in the Flyboy.Commands table seen above
-
-it accepts 2 arguments that are sent by the game system. The
-first is "flyboy" which we dispose of because it's known already.
-The second is a table containing all the words the player entered
-in order and are used to choose the function from the table.
---]]
 local function Dispatch(_, args)
     if(args ~= nil)then                       -- if there are argumets to the command
         local commName = table.remove(args,1) -- capture the first argument
-        if (Flyboy.Commands[commName]) then   -- check to see the function is provided in the table
-            Flyboy.Commands[commName](args)   -- execute the found function and give it the remaining arguments
+        if (AllianceChat.Commands[commName]) then   -- check to see the function is provided in the table
+            AllianceChat.Commands[commName](args)   -- execute the found function and give it the remaining arguments
         else                                  -- if an argument did not have a corresponding function
-            ProcessEvent("FB_CHATBOX_MSG", {  -- send a message to the chatbox through the event system
-                    type = "error",           -- using "error" type so the message is in red
-                    str  = "Command not known ("..commName..")"})
+            print("command not found")
         end
     else                                      -- if no arguments are given
-        Flyboy.Commands.help()                -- execute the help command (they need help)
+        AllianceChat.Commands.help()                -- execute the help command (they need help)
     end
 end
 
 
-RegisterUserCommand('flyboy', Dispatch, "") -- register the dispatch function to execute when the command is given
+RegisterUserCommand('ac', Dispatch, "") -- register the dispatch function to execute when the command is given
 
-return Flyboy.Commands
+
+
+-- function AllianceChat.Commands.prompt(_, data)
+--     if data ~= nil then
+--         local message = table.concat(data, " ") or ""
+--         AllianceChat.send({
+--             name      = GetPlayerName(),
+--             guild     = GetGuildTag(),
+--             factionColor = rgbtohex(FactionColor_RGB[tonumber(GetPlayerFaction())]) or '127FFFFFF',
+--             msg       = message,
+--
+--         })
+--     end
+-- end
+
+-- -- to make AllianceChannel provide a prompt via hotkey that appears
+-- -- like it is part of the game's regular chat service
+-- -- first we create a command, the name of which will unfortunately contain
+-- -- the color number of the prompt.. it's dumb but that's what they provided
+local command = AllianceChat.Settings.promptName
+RegisterUserCommand(command, AllianceChat.Commands.prompt)
+
+-- next we create an alias to the "prompt" command
+-- when this alias is called, it will produce a prompt with the colored
+-- channel name in place, prompting the user to type a message
+
+gkinterface.GKProcessCommand("alias ".. command.." 'ac prompt'")
+
+-- now we bind a key to the alias we created
+gkinterface.GKProcessCommand("bind Y "..command)
+
+return AllianceChat.Commands

@@ -1,18 +1,9 @@
-Flyboy.Settings = Flyboy.Settings or {}
 
-function Flyboy.Settings:Save()
-    SaveSystemNotes(spickle(self), self.fileID)
-end
+AllianceChat.Settings = AllianceChat.Settings or {
+        ['promptColor'] = "\12737c8ab",
+        ['msgColor']    = "\127ffffff",
+        ['channelName'] = "<Ally> ",
+        ['promptName']  = "Say:", --may not contain spaces
+}
 
-function Flyboy.Settings:Load()
-    local set = unspickle(LoadSystemNotes(self.fileID))
-    if(set)then
-        for k, v in ipairs(set)do
-            if (tostring(k) ~= "fileID")then
-                self.k = v
-            end
-        end
-    end
-end
-
-return Flyboy.Settings
+return AllianceChat.Settings
