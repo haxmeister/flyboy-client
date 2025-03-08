@@ -52,7 +52,7 @@ local function SetupLineInputHandlers(conn, conn_handler, line_handler, disconn_
     qtail = qtail + 1
     return true
   end
-  
+
   -- returns true if all available data was written
   -- false if we need a subsequent write handler
   local write_available_data = function()
@@ -66,7 +66,7 @@ local function SetupLineInputHandlers(conn, conn_handler, line_handler, disconn_
   end
 
   local writehandler = function()
-    if write_available_data() then 
+    if write_available_data() then
       conn.tcp:SetWriteHandler(nil)
     end
   end
@@ -85,12 +85,12 @@ local function SetupLineInputHandlers(conn, conn_handler, line_handler, disconn_
     connected = true
 --    local err = conn.tcp:GetSocketError()
 --    if err then
---      if string.find(err,'WSAEWOULDBLOCK') then 
+--      if string.find(err,'WSAEWOULDBLOCK') then
 --        for count = 1,1000000 do end
 --        err = conn.tcp:GetSocketError()
 --      end
 --    end
---    if err then 
+--    if err then
 ----    if not string.find(err, "BLOCK") then
 --      conn.tcp:Disconnect()
 --      return conn_handler(nil, err)
@@ -128,4 +128,3 @@ function TCP.make_server(port, conn_handler, line_handler, disconn_handler)
 
   return conn
 end
-

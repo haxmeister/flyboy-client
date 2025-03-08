@@ -1,92 +1,60 @@
 --[[
-flyboy 1.0
-By Haxmeister
-Using orignal Voce code By TheRedSpy
-]]
 
--- Helper function
-local function get_args(str)
-    local quotechar
-    local i=0
-    local args,argn,rest={},1,{}
-    while true do
-        local found,nexti,arg = string.find(str, '^"(.-)"%s*', i+1)
-        if not found then found,nexti,arg = string.find(str, "^'(.-)'%s*", i+1) end
-        if not found then found,nexti,arg = string.find(str, "^(%S+)%s*", i+1) end
-        if not found then break end
-        table.insert(rest, string.sub(str, nexti+1))
-        table.insert(args, arg)
-        i = nexti
-    end
-    return args,rest
-end
+Author: Joshua S. Day (haxmeister)
 
+Purpose: This plugin provides access to the flyboy server API. Using this
+         Connection, it provides shared data between players using
+         the plugin.
 
-flyboy = flyboy or {}
+Flyboy plugin enables sharing of the follow types of data, assuming it
+has been provided by one of it's users:
 
-dofile("tcpstuff.lua") -- Socket stuff
-dofile("notifier.lua") -- Notifier
-dofile("roid.lua") -- roids
-dofile("ui.lua") -- UI windows
---dofile("roidnotifier.lua") -- roid notifier
+    1. Location of other players you and others have seen in real time.
+    2. Locations asteroids with ore data that has been scanned by you or others.
+    3. Location of unrats and unrat dent that has been seen by you or others.
+    4. Location of queens that have been seen by you or others.
+    5. Location of Leviathon that has been seen by you or others.
+    6. A private chat channel that is NOT monitored by other players or game
+       administrators.
 
-flyboy.server = "damona.liguros.net"
---flyboy.server = "185.148.129.108"
---flyboy.server = "0.0.0.0"
-flyboy.port = 6736
+--]]
 
-flyboy.print = function(str)
-    pcall(function() HUD:PrintSecondaryMsg("\1278e5151[\1270000aaflyboy\1278e5151] \127dddddd" .. str) end)
-end
+-- The table that will contain the flyboy plugin
+Flyboy = Flyboy or {}
 
-flyboy.printerror = function(str)
-    pcall(function() HUD:PrintSecondaryMsg("\1278e5151[\1270000aaflyboy\1278e5151] \127ff3333" .. str) end)
-end
+-- The IP address or url of the server
+Flyboy.server = "192.168.0.30"
 
-flyboy.PlayerEnteredGame = function()
-    flyboy.print("flyboy loaded...")
-    flyboy.UI.Init()
-    flyboy.TCPConn.connect()
-end
+-- The port to use on the server
+Flyboy.port = 3000
 
-flyboy.ShowHelp = function()
-    flyboy.print("flyboy help")
-    flyboy.print("flyboy accepts the following commands:")
-    flyboy.print("/flyboy help - Display this help")
-    flyboy.print("/flyboy connect - Manually connect to server")
-    flyboy.print("/flyboy disconnect - Disconnect from server")
-    flyboy.print("/flyboy clearspots - Clears all the spots on the HUD")
-    flyboy.print("/flyboy findore Carbonic - list known locations of carbonic ore (case sensitive)")
-    flyboy.print("You will be notified when other players using flyboy meet players around the verse")
-end
+-- Functions to load and save settings and update the running table
+Flyboy.Settings = dofile "settings.lua"
 
-flyboy.Command = function(_, args)
-    if (args~=nil) then
+-- The name of the system notes file that will store your settings
+Flyboy.Settings.fileID = "flyboy"
 
-        if (args[1]=="connect") then
-            flyboy.TCPConn.connect()
-        elseif (args[1]=="disconnect") then
-            flyboy.TCPConn.Disconnect()
-        elseif (args[1]=="sendspot") then
-            flyboy.TCPConn.SendData({ t=2, name="Fake Guy No.1", shipname="Valkryie X-1", health="100", sectorid=5751, faction=1, guildtag="FAMY", reporter="TheReporter" })
-        elseif (args[1]=="clearspots") then
-                flyboy.ClearSpots()
-        elseif (args[1]=="help") then
-            flyboy.ShowHelp()
-        elseif (args[1]=="findore")then
-            if (args[2]==nil) then
-                flyboy.printerror("Missing parameters for command - " .. args[1])
-                return
-            end
-            flyboy.TCPConn.SendData({action="findore", oretype=args[2]})
-        end
-    else
-        flyboy.print("For available commands use /flyboy help")
-    end
-end
+-- Loading previous flyboy settings from the fileID given
+Flyboy.Settings:Load()
+
+-- Functions to manage the TCP connection to the server
+Flyboy.Conn = dofile "connectivity/connection.lua"
+
+-- Game events to watch and FB (flyboy) custom events to trigger and watch,
+-- all events are registered in this file as well
+Flyboy.Events = dofile "events.lua"
+
+-- Commands that can be executed in the VO chat window during gameplay
+Flyboy.Commands = dofile "commands.lua"
+
+-- Load MDI-targetlist integrations
+Flyboy.MDItargetlist = dofile "integrations/targetlist.lua"
+
+--Flyboy.ui       = dofile "ui/spots.lua"
 
 
 
-RegisterEvent(flyboy.PlayerEnteredGame, "PLAYER_ENTERED_GAME")
-RegisterEvent(TargetScanned, "TARGET_SCANNED")
-RegisterUserCommand('flyboy', flyboy.Command)
+
+
+
+
